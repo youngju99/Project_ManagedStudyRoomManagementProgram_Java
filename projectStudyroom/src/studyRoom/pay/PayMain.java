@@ -34,8 +34,7 @@ public class PayMain {
 		int userID = 0;		// 결제할 회원의 ID(userID)
 		int date = 0;		// 등록일 수
 		int money = 0;		// 결제금액
-		UserSeatSql userseat = new UserSeatSql();
-		PaySql addPay = new PaySql();
+		UserPaySql userseat = new UserPaySql();
 		
 		
 		System.out.println("결제할 회원의 이름을 입력하세요. >> ");
@@ -70,7 +69,7 @@ public class PayMain {
 				// 1일 15000원으로 계산해 결제날자랑해서  pay db에 저장
 				money = date * 15000;
 				PayHistory pay_add = new PayHistory(userID, money, startDate);
-				int insertPay = addPay.addPay(conn, tmt, pay_add);
+				int insertPay = userseat.addPay(conn, tmt, pay_add);
 				
 				
 				UserSeatHistory addSeatDate = new UserSeatHistory(userID, startDate, endDate);
