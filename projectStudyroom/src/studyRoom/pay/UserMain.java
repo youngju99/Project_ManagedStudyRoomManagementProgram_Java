@@ -46,13 +46,7 @@ public class UserMain {
 		UserSeatHistory user_input = new UserSeatHistory(userName, userSchool, userGrade, 
 				userMobile, parentMobile, sms);
 		int insertCount_user = userinput.addUser(conn, tmt, user_input);
-		
-//		// userID가져오기
-//		userID = userinput.selectUserID(conn, tmt, userMobile);
-//		UserSeatHistory seat_input = new UserSeatHistory(userID);
-//		
-//		// seat에 userID 저장
-//		int insertCount_seat = userinput.addSeat(conn, tmt, seat_input);
+
 
 		System.out.println("등록되었습니다.");
 	}
