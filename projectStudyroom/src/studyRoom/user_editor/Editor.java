@@ -46,7 +46,7 @@ public class Editor {
 			ui.setUserMobile(br.readLine());
 			System.out.println("변경할 사용자의 부모님 연락처를 입력하세요");
 			ui.setParentMobile(br.readLine());
-			
+			/*
 			System.out.println("변경할 사용자의 등록날짜를 입력하세요 - 일:2자리/월:2자리/년도:4자리");
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		       // you can change format of date
@@ -58,7 +58,7 @@ public class Editor {
 			Date output_dt = formatter.parse(br.readLine());
 		    Timestamp output_ts = new Timestamp(output_dt.getTime());
 			ui.setOutputTime(output_ts);
-			
+			*/
 			System.out.println("변경할 사용자의 sms 수신여부 Y / N 을 입력하세요");
 			ui.setSms(br.readLine());
 			
@@ -68,8 +68,8 @@ public class Editor {
 					   + "     , userGrade = ?"
 					   + "     , userMobile = ?"
 					   + "     , parentMobile = ?"
-					   + "     , inputTime = ?"
-					   + "     , outputTime = ?"
+					   //+ "     , inputTime = ?"
+					   //+ "     , outputTime = ?"
 					   + "     , sms = ?"
 					   + "     , penalty = ?"
 					   + " WHERE userID = ?;";
@@ -80,11 +80,11 @@ public class Editor {
 			tmt.setInt(3, ui.getUserGrade());
 			tmt.setString(4, ui.getUserMobile());
 			tmt.setString(5, ui.getParentMobile());
-			tmt.setTimestamp(6, ui.getInputTime());
-			tmt.setTimestamp(7, ui.getOutputTime());
-			tmt.setString(8, ui.getSms());
-			tmt.setInt(9, ui.getPenalty());
-			tmt.setInt(10, ui.getUserID());
+			//tmt.setTimestamp(6, ui.getInputTime());
+			//tmt.setTimestamp(7, ui.getOutputTime());
+			tmt.setString(6, ui.getSms());
+			tmt.setInt(7, ui.getPenalty());
+			tmt.setInt(8, ui.getUserID());
 			
 			tmt.executeUpdate();
 			
