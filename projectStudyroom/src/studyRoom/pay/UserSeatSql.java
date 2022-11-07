@@ -4,6 +4,9 @@ package studyRoom.pay;
  * @author : 조규완
  * @date : 2022/11/04
  * @memo : 신규회원등록 sql
+ * 
+ * @re : 
+ * @date : 2022/11/07
  */
 
 import java.sql.Connection;
@@ -18,22 +21,19 @@ import java.util.List;
 import db.DbExecute;
 
 public class UserSeatSql {
-	private static ResultSet rs;
+	
 	
 	// 이름으로 검색한 유저 목록 리스트뽑기
 	public List<UserSeatHistory> selectUser(Connection conn, PreparedStatement tmt, String name) {
 		List<UserSeatHistory> list = new ArrayList<>();
 		
 		String sql = "SELECT userID, userName, userSchool, userGrade, userMobile, parentMobile, inputTime, outputTime, sms "
-				+ "FROM user WHERE userName = ?;";
+				+ " FROM user WHERE userName = '" + name + "' ;";
 		String[] select = {sql};
+		ResultSet rs = null;
+		rs = DbExecute.select(conn, rs, sql);
 		
 		try {
-			tmt = conn.prepareStatement(sql);
-			tmt.setString(1, name);
-//			rs = DbExecute.select(conn, rs, sql);
-			ResultSet rs = tmt.executeQuery();
-			
 			while (rs.next()) {
 				int userID = rs.getInt(1);
 				String userName = rs.getString(2);
@@ -41,14 +41,13 @@ public class UserSeatSql {
 				int userGrade = rs.getInt(4);
 				String userMobile = rs.getString(5);
 				String parentMobile = rs.getString(6);
-				String sms = rs.getString(9);				
-				UserSeatHistory role = new UserSeatHistory(userID, userName, userSchool, userGrade, userMobile,
+				String sms = rs.getString(9);
+				
+				UserSeatHistory user = new UserSeatHistory(userID, userName, userSchool, userGrade, userMobile,
 						 parentMobile, sms);
-				list.add(role);
+				list.add(user);
 			}
 			
-			tmt.clearParameters();
-			tmt.close();
 		} catch (SQLException e) {
 			System.out.println("SQL Exception: " + e);
 		} catch (Exception e) {
@@ -57,92 +56,85 @@ public class UserSeatSql {
 		return list;
 	}
 	
-	public boolean blacklist(Connection conn, PreparedStatement tmt, int userID) {
+	// 블랙리스트인지 확인하기
+	public static boolean blacklist(Connection conn, PreparedStatement tmt, int userID) {
 		String sql = "SELECT listNo"
-				+ "FROM blacklist WHERE userID = ?;";
+				+ " FROM blacklist WHERE userID = '" + userID + "';";
 		String[] select = {sql};
 		int listNo = 0;
-		boolean result = true;
+		ResultSet rs = null;
+		rs = DbExecute.select(conn, rs, sql);
 		
 		try {
-			tmt = conn.prepareStatement(sql);
-			tmt.setInt(1, userID);
-//			rs = DbExecute.select(conn, rs, sql);
-			ResultSet rs = tmt.executeQuery();
 			
-			while (rs.next()) {
+			if (rs.next()) {
 				listNo = rs.getInt(1);
-				
-				if (listNo == 0) {
-					result = true;
-				} else {
-					result = false;
-				}
-				
 			}
 			
-			tmt.clearParameters();
-			tmt.close();
+			if (listNo <= 0) {
+					return true;
+			} 
+				
+			System.out.println("이 회원은 블랙리스트 입니다.");
+			return false;
+
+			
 		} catch (SQLException e) {
 			System.out.println("SQL Exception: " + e);
+			return false;
 		} catch (Exception e) {
 			System.out.println("Exception: " + e);
+			return false;
 		} 
-		return result;
+		
 	}
 	
-	public boolean select_seat(Connection conn, PreparedStatement tmt, int userID) {
+	// 좌석이 있는지 확인하기
+	public static boolean selectSeat(Connection conn, PreparedStatement tmt, int userID) {
 		String sql = "SELECT seatNum"
-				+ "FROM seat WHERE userID = ?;";
+				+ " FROM seat WHERE userID = '" + userID +"';";
 		String[] select = {sql};
-		boolean result = false;
+		int seatNum = 0;
+		ResultSet rs = null;
+		rs = DbExecute.select(conn, rs, sql);
 		
 		try {
-			tmt = conn.prepareStatement(sql);
-			tmt.setInt(1, userID);
-			rs = DbExecute.select(conn, rs, sql);
-			ResultSet rs = tmt.executeQuery();
 			
-			while (rs.next()) {
-				int seatNum = rs.getInt(1);
-				
-				if (seatNum == 0) {
-					result = false;
-				} else {
-					result = true;
-				}
-				
+			if (rs.next()) {
+				seatNum = rs.getInt(1);
 			}
 			
-			tmt.clearParameters();
-			tmt.close();
+			if (seatNum == 0) {
+				return false;
+			} else {
+				return true;
+			}
 		} catch (SQLException e) {
 			System.out.println("SQL Exception: " + e);
+			return false;
 		} catch (Exception e) {
 			System.out.println("Exception: " + e);
+			return false;
 		} 
-		return result;
+		
 	}
 	
+	//
 	public boolean selectUserID(Connection conn, PreparedStatement tmt, int userID) {
 		String sql = "SELECT userID"
-				+ "FROM user WHERE userID = ?;";
+				+ " FROM user WHERE userID = '" + userID + "';";
 		String[] select = {sql};
 		boolean result = false;
+		ResultSet rs = null;
+		rs = DbExecute.select(conn, rs, sql);
 		
 		try {
-			tmt = conn.prepareStatement(sql);
-			tmt.setInt(1, userID);
-			rs = DbExecute.select(conn, rs, sql);
-			ResultSet rs = tmt.executeQuery();
 			
 			while (rs.next()) {
 				userID = rs.getInt(1);
 				
 			}
 			
-			tmt.clearParameters();
-			tmt.close();
 		} catch (SQLException e) {
 			System.out.println("SQL Exception: " + e);
 		} catch (Exception e) {
@@ -151,92 +143,38 @@ public class UserSeatSql {
 		return result;
 	}
 
-	public int addUser(Connection conn, PreparedStatement tmt, UserSeatHistory adduser) {
-		int insertCount = 0;
-		String sql = "INSERT INTO user(userName, userSchool, userGrade, userMobile, parentMobile, sms)"
-				+ "VALUES(?, ?, ?, ?, ?, ?)";
-		String[] insert = {sql};
-		DbExecute.insert(conn, insert);
-
-		try {
-			tmt = conn.prepareStatement(sql);
-			
-			tmt.setString(1, adduser.getUserName());
-			tmt.setString(2, adduser.getUserSchool());
-			tmt.setInt(3, adduser.getUserGrade());
-			tmt.setString(4, adduser.getUserMobile());
-			tmt.setString(5, adduser.getParentMobile());
-			tmt.setString(6, adduser.getSms());
-
-			insertCount = tmt.executeUpdate();
-			tmt.clearParameters();
-			
-			tmt.close();
-
-		} catch (SQLException e) {
-			System.out.println("SQL Exception: " + e);
-		} catch (Exception e) {
-			System.out.println("Exception: " + e);
-		} 
-		return insertCount;
+	// 신규 회원 정보 추가 메서드
+	public static int addUser(Connection conn, PreparedStatement tmt, UserSeatHistory adduser) {
+	
+		String[] sql = {"INSERT INTO user(userName, userSchool, userGrade, userMobile, parentMobile, sms) "
+				+ " VALUES('" + adduser.getUserName() + "', '" + adduser.getUserSchool() + "', '" + adduser.getUserGrade() + "', '"
+				+ adduser.getUserMobile() + "', '" + adduser.getParentMobile() + "', '" + adduser.getSms() +"')"};
+		DbExecute.insert(conn, sql);
+		
+		return 1;
 	}
 	
+	// 좌석 추가 메서드
 	public int addSeat(Connection conn, PreparedStatement tmt, UserSeatHistory addseat) {
 		int insertCount = 0;
-		String sql = "INSERT INTO seat(userID, startDate, endDate)"
-				+ "VALUES(?, ?, ?)";
-		String[] insert = {sql};
-		DbExecute.insert(conn, insert);
+		String[] sql = {"INSERT INTO seat(userID, startDate, endDate)"
+				+ " VALUES('" + addseat.getUserID() + "', '" + addseat.getStartDate() + "', '" + addseat.getEndDate() + "')"};
+		DbExecute.insert(conn, sql);
 		
-		try {
-			tmt = conn.prepareStatement(sql);
-
-			tmt.setInt(1, addseat.getUserID());
-			tmt.setTimestamp(2, addseat.getStartDate());
-			tmt.setTimestamp(3, addseat.getEndDate());
-
-			insertCount = tmt.executeUpdate();
-			tmt.clearParameters();
-			
-			tmt.close();
-
-		} catch (SQLException e) {
-			System.out.println("SQL Exception: " + e);
-		} catch (Exception e) {
-			System.out.println("Exception: " + e);
-		} 
-
 		return insertCount;
 	}
 
 	
-
+	// 좌석 정보 업데이트 메서드
 	public int updateSeat(Connection conn, PreparedStatement tmt, UserSeatHistory role, int userID) {
 		int updateCount = 0;
-		String sql = "UPDATE seat SET startDate = ?, endDate = ? "
-				+ "WHERE userID = ?";
+		String sql = "UPDATE seat SET startDate = '" + role.getStartDate() + "', endDate = '" + role.getEndDate()
+				+ "' WHERE userID = '" + userID +"';";
 		String[] update = {sql};
 		DbExecute.update(conn, update);
-
-		try {
-			
-			tmt = conn.prepareStatement(sql);
-
-			tmt.setTimestamp(1, role.getStartDate());
-			tmt.setTimestamp(2, role.getEndDate());
-			tmt.setInt(3, userID);
-
-			updateCount = tmt.executeUpdate();
-			
-			tmt.clearParameters();
-			tmt.close();
-		} catch (SQLException e) {
-			System.out.println("SQL Exception: " + e);
-		} catch (Exception e) {
-			System.out.println("Exception: " + e);
-		} 
 
 		return updateCount;
 	}
 	
 }
+
