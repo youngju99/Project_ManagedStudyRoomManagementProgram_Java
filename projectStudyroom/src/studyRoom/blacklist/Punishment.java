@@ -134,7 +134,6 @@ public class Punishment {
 			
 			System.out.println("\n\t >> '" + name + "'님 현재 벌점 '" + Math.abs(point) + "'점으로 벌점 " + Math.abs(PENALTY) + "점을 초과하여 블랙리스트에 추가되었습니다.");
 			System.out.println("\t >> 환불을 진행하세요.\n");
-			
 		}
 		
 	}
