@@ -11,7 +11,6 @@ import db.DbExecute;
 import db.MySqlConnect;
 
 class LoginSystem extends Thread{		// 접근 제한과 동시 동작을 위한 Thread 상속
-	// ㅅ
 	public void run() {
 		try {
 			resetPW();
