@@ -4,6 +4,9 @@ package studyRoom.pay;
  * @author : 조규완
  * @date : 2022/11/04
  * @memo : 결제 sql
+ * 
+ * @re : 
+ * @date : 2022/11/07
  */
 
 import java.sql.Connection;
@@ -16,26 +19,10 @@ public class PaySql {
 	public int addPay(Connection conn, PreparedStatement tmt, PayHistory addPay) {
 		int insertCount = 0;
 		String sql = "INSERT INTO pay(userID, payment, payTime)"
-				+ "VALUES(?, ?, ?)";
+				+ "VALUES('" + addPay.getUserID() + "', '" + addPay.getPayment() + "', '" + addPay.getPayTime() + "')";
 		String[] insert = {sql};
 		DbExecute.insert(conn, insert);
-		try {
-			tmt = conn.prepareStatement(sql);
 
-			tmt.setInt(1, addPay.getUserID());
-			tmt.setInt(2, addPay.getPayment());
-			tmt.setTimestamp(3, addPay.getPayTime());
-
-			insertCount = tmt.executeUpdate();
-			tmt.clearParameters();
-			
-			tmt.close();
-
-		} catch (SQLException e) {
-			System.out.println("SQL Exception: " + e);
-		} catch (Exception e) {
-			System.out.println("Exception: " + e);
-		} 
 		return insertCount;
 	}
 	
