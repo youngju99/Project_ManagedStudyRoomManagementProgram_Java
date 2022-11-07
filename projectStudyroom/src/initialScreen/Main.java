@@ -73,9 +73,7 @@ public class Main {
 				System.out.println("\n\t\t\t\t[ 사용자 접근 ]\n");
 				
 				// 사용자 메서드 호출
-				if(!Student.showUserMenu()) {
-					continue;					
-				}
+				Student.showUserMenu();
 			}
 			else if(select == 2) {
 				// 종료
