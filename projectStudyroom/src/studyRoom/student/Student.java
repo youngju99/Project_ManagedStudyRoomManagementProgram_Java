@@ -34,7 +34,7 @@ public class Student {
 	static DecimalFormat f = new DecimalFormat("00");
 	
 	// 사용자 메뉴
-	public static boolean showUserMenu() throws IOException {
+	public static void showUserMenu() throws IOException {
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		boolean run = true;
@@ -64,19 +64,14 @@ public class Student {
 
 				} catch (NumberFormatException e) {		// 정수를 입력하지 않았을 경우
 					if (s.equalsIgnoreCase("X")) {		// 종료 선택
-						run = false;
-						break;
+						System.out.println("\t\t\t >> 사용자 메뉴를 종료합니다.");
+						return;
 					} else {				// 문자(열)를 입력했을 경우
 						System.out.println("\t\t\t >> 잘못입력하셨습니다. 숫자를 입력해주세요.\n");
 						check = false;
 					}
 				}
 			} while (!check);
-
-			if (!run) {		// 사용자 메뉴 종료
-				System.out.println("\t\t\t >> 사용자 메뉴를 종료합니다.");
-				break;
-			}
 
 			System.out.println();
 			String name = ""; // 입력 받은 이름을 담을 변수
@@ -100,7 +95,7 @@ public class Student {
 		}
 
 		mysql.disconnect(conn);;
-		return false;
+		return;
 	}
 	
 	// 입실 / 퇴실 시간 초기화
