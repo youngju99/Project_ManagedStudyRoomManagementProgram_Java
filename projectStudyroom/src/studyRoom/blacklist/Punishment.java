@@ -1,202 +1,151 @@
 package studyRoom.blacklist;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 /*
  * 작성자 : 정우성
  * 작성일 : 2022-10-26
  * 수정일 : 2022-10-26
  * 내용 : 벌점 추가
+ * 수정 : 이다영
  */
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+//import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.StringTokenizer;
+//import java.util.StringTokenizer;
+
+import db.DbExecute;
+import db.MySqlConnect;
 
 public class Punishment {
 
-	Connection conn = null;
-	PreparedStatement tmt = null;
-	PunishInfo pi = new PunishInfo();
+	static MySqlConnect mysql = new MySqlConnect();
+	static PunishInfo pi = new PunishInfo();
 	
-	public static void main(String[] args) throws Exception {
-		try {
-			// todo : 공통 db Conn 사용가능.
-			String url = "jdbc:mysql://localhost:3306/studyroom";
-			String id = "root";
-			String pw = "0194";
-			
-			Connection conn = DriverManager.getConnection(url, id, pw);
-			PreparedStatement tmt = null;
-			System.out.println("Test Main Start!!!");
-			
-			PunishInfo pi = new PunishInfo(1);
-			
-			while(true) {
-				// dummy for test
-				int userId = 1;
-				
-				setPunishInfo(conn, tmt, pi);
-				
-				pi = getPunishInfo(conn, tmt, pi);
-				
-				System.out.println("userID : " +pi.getUserID());
-				System.out.println("Point : " +pi.getPoint());
-			}
+	static final int PENALTY = -30;
+	
+	public static void publish(Connection conn) throws IOException {
 		
-		} catch(SQLException e) {
-			System.out.println(e);
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		int select = 0, penalty = 0;		// 항목 선택, 벌점
+		String name = "", phone = "";		// 입력 받을 사용자 정보
+		
+		while (true) {
+			System.out.println("\n\t >> 벌점 부과 항목");
+			System.out.println("\t 0: 결석 | 1: 지각 | 2: 휴대폰 미제출 | 3: 전자기기 사용 | 4: 조퇴");
+			System.out.print("\t >> ");
+			try {
+				select = Integer.parseInt(br.readLine());
+				if(select < 0 || select > 4) {
+					System.out.println("\n\t >> 잘못 입력하셨습니다. 다시 입력해주세요.");
+					continue;
+				}
+				break;
+			} catch(NumberFormatException e) {
+				System.out.println("\n\t >> 잘못 입력하셨습니다. 숫자를 입력해주세요.");
+			}
 		}
-	
+		
+		switch(select) {
+			case 0 :	// 결석
+				penalty = 10;
+				break;
+			case 1 :	// 지각
+				penalty = 7;
+				break;
+			case 2 :	// 휴대폰 미제출
+				penalty = 6;
+				break;
+			case 3 :	// 전자기기 사용
+				penalty = 4;
+				break;
+			default :	// 조퇴
+				penalty = 2;		
+		}
+		
+		// 사용자 정보 입력
+		while(true) {
+			System.out.println("\n\t >> 사용자 정보를 입력하세요.");
+			System.out.print("\t >> 이름 : ");
+			name = br.readLine();
+			System.out.print("\t >> 핸드폰 : ");
+			phone = br.readLine();
+			
+			if(checkUserInfo(conn, name, phone)) {
+				break;
+			}	
+		}
+		// 벌점 부여하기
+		updatePoint(conn, pi, penalty, name);
+		return;	
 		
 	}
+	
+	// 사용자 정보 확인
+	public static boolean checkUserInfo(Connection conn, String name, String phone) {
+		
+		// SQL문
+		String sql = "SELECT userID, penalty FROM user WHERE userName = '" + name + "' AND userMobile = '" + phone + "';";
+		ResultSet rs = null;
 
-	/**
-	 * 
-	 * @param conn
-	 * @param tmt
-	 * @param pi
-	 * @return PunishInfo
-	 * 사용자 ID 와 Point 가져오기
-	 */
-	public static PunishInfo getPunishInfo(Connection conn, PreparedStatement tmt, PunishInfo pi) {
-		
-		//PunishInfo pi = new PunishInfo(userID);
-		
+		// select 메서드 호출
+		rs = DbExecute.select(conn, rs, sql);
+
 		try {
-			String sql = "SELECT userID -- 사용자 ID"
-					   + "     , point -- 사용자 벌점"
-					   + "  FROM user "
-					   + " WHERE userID = ?;" ;
-			
-			tmt = conn.prepareStatement(sql);
-			tmt.setInt(1, pi.getUserID());
-			
-			ResultSet rs = tmt.executeQuery();
-			// userId
-//			rs.getInt(1);
-			// point			
-			pi.setPoint(rs.getInt(2));
-			
+			if (rs.next()) {
+				pi.setUserID(rs.getInt("userID"));
+				pi.setPoint(rs.getInt("penalty"));
+				return true;
+			} else {
+				System.out.println("\n\t >> 일치하는 사용자 정보가 없습니다.\n");
+				return false;
+			}
+
 		} catch (SQLException e) {
-			System.out.println("SQL Exception: " + e);
+			System.out.println(e);
 		} catch (Exception e) {
-			System.out.println("Exception: " + e);
-		} 
-		return pi;
+			System.out.println("\n\t>> 에러가 발생하였습니다.\n");
+		}
+		return false;
+		
 	}
 	
-	/**
-	 * 
-	 * @param conn
-	 * @param tmt
-	 * @param pi
-	 * @return PunishInfo
-	 * todo : 1. 회원 벌점 정보 가져오기
-	 *        2. 회원 벌점 업데이트
-	 *        3. 블랙리스트 기준 초과시 블랙리스트 인원 추가
-	 *        4. 블랙리스트 회원은 비활성화 또는 삭제
-	 *        5. 블랙리스트 회원 신규 회원가입 막는 로직 삽입
-	 *        
-	 *        * 월말에 벌점 초기화 
-	 *        * 블랙리스트 정보 트랜잭션
-	 */
-	public static PunishInfo setPunishInfo(Connection conn, PreparedStatement tmt, PunishInfo pi) {
-		PunishInfo pif = getPunishInfo(conn, tmt, pi);
+	public static void updatePoint(Connection conn, PunishInfo pi, int penalty, String name) {
 		
-		try {
-			// 회원의 기존 포인트
-			int prePoint = pif.getPoint();
-			// Update 할 포인트
-			int nextPoint; 
-			
-			// 벌점 선택
-			System.out.println("적용할 벌점을 입력하세요.");
-			System.out.println("1.소음");
-			System.out.println("2.휴대폰 사용");
-			System.out.println("3.무단이용");
-			System.out.println("4.다툼");
-			System.out.println("5.관리자권한");
-			
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			StringTokenizer stk = new StringTokenizer(br.readLine());
-			
-			String op = stk.nextToken();
-			br.close();
-			
-			switch(op) {
-				case "1":
-					nextPoint = prePoint -2;
-					System.out.println("-2 점이 부과됩니다.");
-					break;
-				case "2":
-					nextPoint = prePoint -3;
-					System.out.println("-3 점이 부과됩니다.");
-					break;
-				case "3":
-					nextPoint = prePoint -5;
-					System.out.println("-5 점이 부과됩니다.");
-					break;
-				case "4":
-					nextPoint = prePoint -10;
-					System.out.println("-10 점이 부과됩니다.");
-					break;
-				case "5":
-					nextPoint = prePoint -15;
-					System.out.println("-15 점이 부과됩니다.");
-					break;
-				default:
-					nextPoint = prePoint;
-					System.out.println("벌점 항목을 제대로 입력하지 않았습니다.");
-					break;
-			}
-			
-			
-			String update_sql = "UPDATE user"
-					          + "   SET point = ?"
-					          + " WHERE userID = ?;";
-			
-			tmt = conn.prepareStatement(update_sql);
-			tmt.setInt(1, nextPoint); 
-			tmt.setInt(2, pif.getUserID());
-			
-			tmt.executeUpdate();
-			tmt.clearParameters();
-			
-			conn.commit();
-			tmt.close();
-			
-			// 회원의 벌점 업데이트
-			// 벌점 -15 초과시 블랙리스트 Insert
-			if(nextPoint <= -15) {
-				String update_black_sql = "INSERT INTO blacklist"
-						                + "(userID)"
-						                + "VALUES "
-						                + "(?);";
-				
-				tmt.setInt(1, pif.getUserID());
-				
-				tmt.executeUpdate();
-				tmt.clearParameters();
-				tmt.close();
-				
-				conn.commit();
-				System.out.println("userID : " +pif.getUserID()+ " 회원이 블랙리스트로 지정되었습니다.");
-			}
-			
-			// 최종 사용자의 벌점 출력
-			System.out.println();
-			
-		} catch (SQLException e) {
-			System.out.println("SQL Exception: " + e);
-		} catch (Exception e) {
-			System.out.println("Exception: " + e);
+		int point = pi.getPoint() - penalty;	// 벌점 계산
+		
+		// SQL문
+		String[] sql = {"UPDATE user SET penalty = " + point + " WHERE userID = " + pi.getUserID() + ";"};
+		
+		// 반환값이 있는 update 메서드 호출
+		int row =  DbExecute.updateReturnRow(conn, sql);
+		
+		if(row == 1) {
+			System.out.println("\n\t >> 벌점 "+ penalty + "점이 정상적으로 부과되었습니다.\n");
 		}
 		
-		return pi;
+		if(point < PENALTY) {
+			// 블랙리스트에 추가
+			addBlackList(conn, pi);
+			
+			System.out.println("\n\t >> '" + name + "'님 현재 벌점 '" + Math.abs(point) + "'점으로 벌점 " + Math.abs(PENALTY) + "점을 초과하여 블랙리스트에 추가되었습니다.");
+			System.out.println("\t >> 환불을 진행하세요.\n");
+			
+		}
+		
+	}
+	
+	// 블랙리스트에 추가
+	public static void addBlackList(Connection conn, PunishInfo pi) {
+		
+		// SQL문
+		String[] sql = {"INSERT INTO blacklist VALUES(NULL, " + pi.getUserID() + ");"};
+		
+		// insert 메서드 실행
+		DbExecute.insert(conn, sql);	
 	}
 }
