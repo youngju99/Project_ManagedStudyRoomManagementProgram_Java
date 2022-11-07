@@ -42,7 +42,7 @@ public class ManagerMode {
 		int mode=0;
 		String sql=null;
 		
-// mysql 연결
+		// mysql 연결
 		conn=mySqlConnect.connect();
 		
 		while(true) {
@@ -65,7 +65,8 @@ public class ManagerMode {
 				// 좌석 이용 종료
 				ClearSeat.showClearSeatMenu(conn);
 			} else if(mode==4) {
-				
+				// 벌점 관리
+				Punishment.publish(conn);
 			} else if(mode==5) {
 				smsMain.main(conn);
 			} else if(mode==6) {
