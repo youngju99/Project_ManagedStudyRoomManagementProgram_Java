@@ -11,6 +11,7 @@ import db.DbExecute;
 import db.MySqlConnect;
 
 class LoginSystem extends Thread{		// 접근 제한과 동시 동작을 위한 Thread 상속
+	// ㅅ
 	public void run() {
 		try {
 			resetPW();
@@ -163,7 +164,7 @@ class LoginSystem extends Thread{		// 접근 제한과 동시 동작을 위한 T
 		} while (!upperCheck || !lowerCheck || !numCheck || !specialCheck);
 			
 		// DB에 UPDATE
-		updatePW(code, pw);
+		updatePW(pw, name);
 		mysql.disconnect(conn);
 		System.out.println("\n\t 접근 제한 중 ...\n");
 		return;
@@ -198,10 +199,10 @@ class LoginSystem extends Thread{		// 접근 제한과 동시 동작을 위한 T
 	}
 	
 	// DB에 UPDATE
-	static void updatePW(String code, String pw) {
+	static void updatePW(String pw, String name) {
 		
 		// SQL문
-		String[] sql = {"UPDATE manager SET pw = '" + pw + "' WHERE id = '" + code + "';"};
+		String[] sql = {"UPDATE manager SET pw = '" + pw + "' WHERE managerName = '" + name + "';"};
 		
 		// 반환값이 있는  update메서드 호출
 		int row = DbExecute.updateReturnRow(conn, sql);
