@@ -1,3 +1,8 @@
+// 우성님 코드 바탕으로 축소하고 수정한 코드입니다.
+
+// @author : 조규완
+// @date : 2022/11/07
+
 package studyRoom.user_editor;
 
 import java.io.BufferedReader;
