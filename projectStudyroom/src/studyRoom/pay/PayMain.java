@@ -4,6 +4,9 @@ package studyRoom.pay;
  * @author : 조규완
  * @date : 2022/11/05
  * @memo : 결제 메인창
+ * 
+ * @re : 
+ * @date : 2022/11/07
  */
 
 import java.io.BufferedReader;
@@ -52,34 +55,34 @@ public class PayMain {
 		
 		// blacklist인지 판단
 		if (userseat.blacklist(conn, tmt, userID)) {
-		// 등록일 수 입력
-		startDate = ts;
-		System.out.println("등록일수를 입력하세요(일단위) >>  ");
-		date = sc.nextInt();
-		cal.setTime(ts2);
-		cal.add(Calendar.DATE, date);
-		ts2.setTime(cal.getTime().getTime());
-		Timestamp endDate = ts2;
-		
-		
-		// 결제하기
-		// 1일 15000원으로 계산해 결제날자랑해서  pay db에 저장
-		money = date * 15000;
-		PayHistory pay_add = new PayHistory(userID, money, startDate);
-		int insertPay = addPay.addPay(conn, tmt, pay_add);
-		
-		
-		UserSeatHistory addSeatDate = new UserSeatHistory(userID, startDate, endDate);
-		if (userseat.select_seat(conn, tmt, userID)) {
-			int updateSeat = userseat.updateSeat(conn, tmt, addSeatDate, userID);
-		} else {
-			int insertSeat = userseat.addSeat(conn, tmt, addSeatDate);
-		}
-		
-		
-		System.out.println("등록이되었습니다.");
-		} else {
-			System.out.println("이 회원은 블랙리스트입니다.");
+			// 등록일 수 입력
+			startDate = ts;
+			System.out.println("등록일수를 입력하세요(일단위) >>  ");
+			date = sc.nextInt();
+			cal.setTime(ts2);
+			cal.add(Calendar.DATE, date);
+			ts2.setTime(cal.getTime().getTime());
+			Timestamp endDate = ts2;
+			
+			
+			// 결제하기
+			// 1일 15000원으로 계산해 결제날자랑해서  pay db에 저장
+			money = date * 15000;
+			PayHistory pay_add = new PayHistory(userID, money, startDate);
+			int insertPay = addPay.addPay(conn, tmt, pay_add);
+			
+			
+			UserSeatHistory addSeatDate = new UserSeatHistory(userID, startDate, endDate);
+			// 좌석이 있는지 확인(기존 등록되어있던 회원인지 확인)
+			if (userseat.selectSeat(conn, tmt, userID)) {
+				int updateSeat = userseat.updateSeat(conn, tmt, addSeatDate, userID);
+			} else {
+				int insertSeat = userseat.addSeat(conn, tmt, addSeatDate);
+			}
+			
+			
+			System.out.println("등록이되었습니다.");
 		}
 	}
 }
+
