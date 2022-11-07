@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 /*
  * 작성자 : 정우성
  * 작성일 : 2022-10-24
- * 수정일 : 2022-10-24
+ * 수정일 : 2022-11-07
  * 내용 : 벌점 추가
  */
 public class Editor {
@@ -28,71 +28,15 @@ public class Editor {
 	 *     - DB 업데이트.
 	 *	   - 수정결과 출력.
 	 */
-	Connection conn = null;
-	PreparedStatement tmt = null;
-//	UserInfo ui = new UserInfo();
-	
-	public static void main(String[] args) {
+	public static void updateUserInfo(Connection conn) {
+		PreparedStatement tmt = null;
 		try {
-			String url = "jdbc:mysql://localhost:3306/studyroom";
-			String id = "root";
-			String pw = "0194";
-			
-			Connection conn = DriverManager.getConnection(url, id, pw);
-			PreparedStatement tmt = null;
-			updateUserInfo(conn, tmt, "01011120980");
-			getUserInfo(conn, tmt, "01011120980");
-		} catch (Exception e) {
-			
-		}
-			// TODO: handle exception
-	}
-	
-	public static UserInfo getUserInfo(Connection conn, PreparedStatement tmt, String phone) {
-		UserInfo ui = new UserInfo();
-		try {
-			String sql = "SELECT * "
-					   + "  FROM user "
-					   + " WHERE userMobile = ?;" ;
-			
-			tmt = conn.prepareStatement(sql);
-			tmt.setString(1, phone);
-			
-			ResultSet rs = tmt.executeQuery();
-			
-			while (rs.next()) {
-				ui.setUserID(rs.getInt(1));
-				ui.setUserName(rs.getString(2));
-				ui.setUserSchool(rs.getString(3));
-				ui.setUserGrade(rs.getInt(4));
-				ui.setUserMobile(rs.getString(5));
-				ui.setParentMobile(rs.getString(6));
-				ui.setInputTime(rs.getTimestamp(7));
-				ui.setOutputTime(rs.getTimestamp(8));
-				ui.setSms(rs.getString(9));
-				ui.setPoint(rs.getInt(10));
-			}
-			System.out.println(ui);
-			
-			tmt.clearParameters();
-			tmt.close();
-			
-		} catch (SQLException e) {
-			System.out.println("SQL Exception: " + e);
-		} catch (Exception e) {
-			System.out.println("Exception: " + e);
-		}
-		return ui;
-	}
-	
-	public static UserInfo updateUserInfo(Connection conn, PreparedStatement tmt, String phone) {
-		UserInfo ui = getUserInfo(conn, tmt, phone);
-		try {
-			
 			System.out.println("사용자 정보 변경 화면입니다.");
-			System.out.println("변경할 사용자의 이름을 입력하세요.");
+			System.out.println("정보를 변경할 사용자의 전화번호를 입력하세요.");
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			UserInfo ui = getUserInfo(conn, br.readLine());
 			
+			System.out.println("변경할 사용자의 이름을 입력하세요.");
 			ui.setUserName(br.readLine());
 			System.out.println("변경할 사용자의 학교를 입력하세요");
 			ui.setUserSchool(br.readLine());
@@ -103,7 +47,7 @@ public class Editor {
 			System.out.println("변경할 사용자의 부모님 연락처를 입력하세요");
 			ui.setParentMobile(br.readLine());
 			
-			System.out.println("변경할 사용자의 등록날짜를 입력하세요");
+			System.out.println("변경할 사용자의 등록날짜를 입력하세요 - 일:2자리/월:2자리/년도:4자리");
 			DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		       // you can change format of date
 	        Date input_dt = formatter.parse(br.readLine());
@@ -127,7 +71,7 @@ public class Editor {
 					   + "     , inputTime = ?"
 					   + "     , outputTime = ?"
 					   + "     , sms = ?"
-					   + "     , point = ?"
+					   + "     , penalty = ?"
 					   + " WHERE userID = ?;";
 			
 			tmt = conn.prepareStatement(sql);
@@ -139,7 +83,7 @@ public class Editor {
 			tmt.setTimestamp(6, ui.getInputTime());
 			tmt.setTimestamp(7, ui.getOutputTime());
 			tmt.setString(8, ui.getSms());
-			tmt.setInt(9, ui.getPoint());
+			tmt.setInt(9, ui.getPenalty());
 			tmt.setInt(10, ui.getUserID());
 			
 			tmt.executeUpdate();
@@ -153,7 +97,46 @@ public class Editor {
 		} catch (Exception e) {
 			System.out.println("Exception: " + e);
 		}
+		
+	}
+	
+	public static UserInfo getUserInfo(Connection conn, String phone) {
+		UserInfo ui = new UserInfo();
+		try {
+			String sql = "SELECT * "
+					   + "  FROM user "
+					   + " WHERE userMobile = ?;" ;
+			
+			PreparedStatement tmt = conn.prepareStatement(sql);
+			tmt.setString(1, phone);
+			
+			ResultSet rs = tmt.executeQuery();
+			
+			while (rs.next()) {
+				ui.setUserID(rs.getInt(1));
+				ui.setUserName(rs.getString(2));
+				ui.setUserSchool(rs.getString(3));
+				ui.setUserGrade(rs.getInt(4));
+				ui.setUserMobile(rs.getString(5));
+				ui.setParentMobile(rs.getString(6));
+				ui.setInputTime(rs.getTimestamp(7));
+				ui.setOutputTime(rs.getTimestamp(8));
+				ui.setSms(rs.getString(9));
+				ui.setPenalty(rs.getInt(10));
+			}
+			System.out.println(ui);
+			
+			tmt.clearParameters();
+			tmt.close();
+			
+		} catch (SQLException e) {
+			System.out.println("SQL Exception: " + e);
+		} catch (Exception e) {
+			System.out.println("Exception: " + e);
+		}
 		return ui;
 	}
+	
+	
 	
 }
