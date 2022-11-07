@@ -16,12 +16,12 @@ import db.DbExecute;
 
 public class ClearSeat {
 	
-	static Connection conn = null;
+//	static Connection conn = null;
 	
 	// 메뉴(일괄 종료 / 환불)
-	public static void showClearSeatMenu(Connection c) throws IOException{
+	public static void showClearSeatMenu(Connection conn) throws IOException{
 		
-		conn = c;
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		int select = 0;				// 메뉴 선택
@@ -66,7 +66,7 @@ public class ClearSeat {
 				
 				if(end.equalsIgnoreCase("Y")) {
 					// 일괄종료 하기
-					allClearSeat();
+					allClearSeat(conn);
 					break;
 				}
 				else {		// "N"일 경우
@@ -86,17 +86,17 @@ public class ClearSeat {
 					System.out.print("\t >> 핸드폰 : ");
 					phone = br.readLine();
 					
-					check = checkUserInfo(name, phone); 		// 사용자 정보 확인
+					check = checkUserInfo(conn, name, phone); 		// 사용자 정보 확인
 					
 				} while(!check);
-				refund(name, phone);			// 환불하기
+				refund(conn, name, phone);			// 환불하기
 				break;
 			}
 		}		
 	}
 	
 	// 일괄 종료하기
-	public static void allClearSeat() {
+	public static void allClearSeat(Connection conn) {
 		
 		// SQL문
 		String[] sql = {"UPDATE seat SET userID = NULL, startDate= NULL, endDate = NULL, assignmentStatus = 0 WHERE endDate < DATE(NOW());"};
@@ -114,7 +114,7 @@ public class ClearSeat {
 	}
 	
 	// 사용자 정보 확인
-	public static boolean checkUserInfo(String name, String phone) {
+	public static boolean checkUserInfo(Connection conn, String name, String phone) {
 		
 		// SQL문
 		String sql = "SELECT userID FROM user WHERE userName = '" + name + "' AND userMobile = '" + phone + "';";
@@ -141,7 +141,7 @@ public class ClearSeat {
 	}
 	
 	// 환불
-	public static void refund(String name, String phone) {
+	public static void refund(Connection conn, String name, String phone) {
 		
 		
 		String sql = "SELECT U.userID, DATEDIFF(S.endDate, DATE(NOW())) FROM user U "
@@ -159,7 +159,7 @@ public class ClearSeat {
 			if(rs.next()) {
 				userID = rs.getInt("U.userID");
 				date = rs.getInt("DATEDIFF(S.endDate, DATE(NOW()))");
-				doRefund(userID, date);
+				doRefund(conn, userID, date);
 			}
 			else {
 				System.out.println("\n\t >> 횐불할 금액이 없습니다.\n");
@@ -176,7 +176,7 @@ public class ClearSeat {
 	static DecimalFormat df = new DecimalFormat("#,###");
 	
 	// 환불 진행
-	public static void doRefund(int userID, int date) {
+	public static void doRefund(Connection conn, int userID, int date) {
 		
 		// SQL문
 		String[] sql = {"UPDATE pay SET refundCheck = 1, refund = 15000 * " + date + " WHERE userID = " + userID + ";"};
@@ -188,12 +188,12 @@ public class ClearSeat {
 		
 		if(row == 1) {
 			System.out.printf("\n\t >> %s원이 환불되었습니다.\n\n", df.format(refund));
-			clearSeat(userID);		// 사용자의 좌석 이용 종료
+			clearSeat(conn, userID);		// 사용자의 좌석 이용 종료
 		}
 	}
 	
 	// 좌석 초기화
-	public static void clearSeat(int userID) {
+	public static void clearSeat(Connection conn, int userID) {
 		
 		// SQL문
 		String[] sql = {"UPDATE seat SET userID = NULL, startDate = NULL, endDate = NULL, assignmentStatus = 0 WHERE userID = " + userID + ""};
