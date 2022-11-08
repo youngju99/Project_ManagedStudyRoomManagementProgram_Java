@@ -8,7 +8,7 @@ package studyRoom.pay;
  * @re : 
  * @date : 2022/11/07
  * 
- * @re
+ * @re : 경고 제거
  * @date : 2022/11/08
  */
 
@@ -146,12 +146,11 @@ public class UserPaySql {
 			return false;
 		} 
 	}
-	
 
 
 	// insert----------------------------------------------------------------
 	// 신규 회원 정보 추가 메서드(usermain)
-	public static int addUser(Connection conn, PreparedStatement tmt, UserSeatHistory adduser) {
+	public int addUser(Connection conn, PreparedStatement tmt, UserSeatHistory adduser) {
 	
 		String[] sql = {"INSERT INTO user(userName, userSchool, userGrade, userMobile, parentMobile, sms) "
 				+ " VALUES('" + adduser.getUserName() + "', '" + adduser.getUserSchool() + "', '" + adduser.getUserGrade() + "', '"
@@ -194,8 +193,6 @@ public class UserPaySql {
 
 		return updateCount;
 	}
-	
-	
 	
 }
 
