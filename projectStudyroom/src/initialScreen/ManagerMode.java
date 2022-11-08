@@ -53,10 +53,7 @@ public class ManagerMode {
 			mode=Integer.parseInt(br.readLine());
 			
 			if(mode==0) {
-				System.out.print("추가할 좌석의 수>> ");
-				sql = "INSERT INTO seat VALUES();";
-				AddSeats.addSeat(conn, sql, Integer.parseInt(br.readLine()));
-				
+				AddSeats.addSeat(conn);
 			} else if(mode==1) {
 				PayMain.pay(conn);
 			} else if(mode==2) {
@@ -79,6 +76,5 @@ public class ManagerMode {
 				System.out.println("올바른 값으로 다시 입력해주세요.\n");
 			}
 		}
-		br.close();
 	}
 }
