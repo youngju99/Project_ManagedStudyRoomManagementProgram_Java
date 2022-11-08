@@ -35,6 +35,7 @@ public class PayMain {
 		int userID = 0;		// 결제할 회원의 ID(userID)
 		int date = 0;		// 등록일 수
 		int money = 0;		// 결제금액
+		int seatNum = 0;
 		UserPaySql userseat = new UserPaySql();
 		
 		
@@ -56,6 +57,8 @@ public class PayMain {
 			
 			// blacklist인지 판단
 			if (UserPaySql.blacklist(conn, tmt, userID)) {
+				
+				
 				// 등록일 수 입력
 				startDate = ts;
 				System.out.println("등록일수를 입력하세요(일단위) >>  ");
@@ -78,7 +81,9 @@ public class PayMain {
 				if (UserPaySql.selectSeat(conn, tmt, userID)) {
 					userseat.updateSeat(conn, tmt, addSeatDate, userID);
 				} else {
-					userseat.addSeat(conn, tmt, addSeatDate);
+					System.out.println("등록할 좌석의 번호를 입력해주세요 >> ");
+					seatNum = Integer.parseInt(br.readLine());
+					userseat.updateNewSeat(conn, tmt, addSeatDate, seatNum);
 				}
 				
 				
@@ -92,5 +97,3 @@ public class PayMain {
 		}
 	}
 }
-
-
