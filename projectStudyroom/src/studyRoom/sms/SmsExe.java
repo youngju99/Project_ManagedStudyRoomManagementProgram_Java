@@ -258,8 +258,6 @@ public class SmsExe extends TotalSmsNum {
 		}
 		System.out.println("\n지금은 "+classNum+"교시입니다.");
 		
-		ttArr.clear(); // ArrayList 비우기
-		
 		return classNum;
 	}
 
