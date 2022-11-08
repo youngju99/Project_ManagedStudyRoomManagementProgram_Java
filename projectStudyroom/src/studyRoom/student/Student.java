@@ -145,6 +145,7 @@ public class Student {
 		
 		System.out.println();
 		
+		int count = 0;
 		for(int i=0; i< seatList.size(); i++) {
 			
 			int seatNum = seatList.get(i).getSeatNum();
@@ -154,11 +155,11 @@ public class Student {
 			}
 			
 			System.out.printf("%14s\t\t", f.format(seatNum));				// 좌석 번호 출력
-			
-			if(seatNum % 5 == 0) {											// 5개마다 줄 바꿈
+			count++;
+			if(seatNum % 5 == 0 || (seatNum == seatList.size() && seatList.size() % 5 != 0)) {											// 5개마다 줄 바꿈
 				System.out.println("\n");
 				System.out.print("\t");
-				for(int j=i-4; j<=i; j++) {
+				for(int j=i-(count-1); j<=i; j++) {
 					
 					String user = seatList.get(j).getUser();
 					Timestamp inputTime = seatList.get(j).getInputTime();
@@ -182,6 +183,7 @@ public class Student {
 						System.out.printf("%13s\t\t", name);	// 변수 user를 사용하면 'null'로 출력되기 때문
 					}
 				}
+				count = 0;
 				System.out.println("\n\n");
 			}
 		}
