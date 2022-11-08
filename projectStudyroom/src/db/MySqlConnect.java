@@ -23,7 +23,6 @@ public class MySqlConnect {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(url, id, pw);
-			System.out.println("                                                      [ 접속 ]                                                          \n");
 		} catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFound Exception: " + e);
 		} catch (SQLException e) {
@@ -39,7 +38,6 @@ public class MySqlConnect {
 		if (conn != null) {
 			try {
 				conn.close();
-				System.out.println("                                                      [ 종료 ]                                                          ");
 			} catch (SQLException e) {
 			}
 		}
