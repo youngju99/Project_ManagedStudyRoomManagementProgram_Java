@@ -31,11 +31,6 @@ public class ManagerMode {
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		
 		MySqlConnect mySqlConnect=new MySqlConnect();
-		PayMain payMain = new PayMain();
-		UserMain userMain = new UserMain();
-		SmsMain smsMain=new SmsMain(); // SmsMain객체 생성. 이를 이용해 smsExe 실행 
-		EditorMain editorMain = new EditorMain();
-		
 
 		Connection conn=null; 
 		
@@ -58,9 +53,9 @@ public class ManagerMode {
 				AddSeats.addSeat(conn, sql, Integer.parseInt(br.readLine()));
 				
 			} else if(mode==1) {
-				payMain.pay(conn);
+				PayMain.pay(conn);
 			} else if(mode==2) {
-				userMain.inputUser(conn);
+				UserMain.inputUser(conn);
 			} else if(mode==3) {
 				// 좌석 이용 종료
 				ClearSeat.showClearSeatMenu(conn);
@@ -68,9 +63,9 @@ public class ManagerMode {
 				// 벌점 관리
 				Punishment.publish(conn);
 			} else if(mode==5) {
-				smsMain.main(conn);
+				SmsMain.main(conn);
 			} else if(mode==6) {
-				editorMain.editorUser(conn);
+				EditorMain.editorUser(conn);
 			} else if(mode==7) {
 				System.out.println("시스템을 종료합니다.\n");
 				mySqlConnect.disconnect(conn);
