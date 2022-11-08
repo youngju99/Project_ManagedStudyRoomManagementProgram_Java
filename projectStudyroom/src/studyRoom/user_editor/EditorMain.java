@@ -1,13 +1,10 @@
-// 우성님 코드 바탕으로 축소하고 수정한 코드입니다.
-// 날짜관련 코드는 삭제예정
-
-// @author : 조규완
-// @date : 2022/11/07
-
-// @re : 경고 제거
-// @date : 2022/11/08
-
 package studyRoom.user_editor;
+
+/*
+ * @author : 조규완
+ * @date : 2022/11/08
+ * @memo : 우성님editor클래스 바탕으로 제작
+ */
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +30,10 @@ public class EditorMain {
 		String userMobile = "";
 		int userID = 0;
 		
+		System.out.println("수정할 사용자의 핸드폰번호를 입력해주세요 >> ");
+		userMobile = br.readLine();
+		userID = selectUserID(conn, tmt, userMobile);
+		
 		System.out.println();
 		System.out.println("사용자 정보 변경 화면입니다.");
 		System.out.println("변경할 사용자의 이름을 입력하세요.");
@@ -42,52 +43,25 @@ public class EditorMain {
 		System.out.println("변경할 사용자의 학년을 입력하세요");
 		ui.setUserGrade(Integer.parseInt(br.readLine()));
 		System.out.println("변경할 사용자의 전화번호를 입력하세요");
-		userMobile = br.readLine();
-		ui.setUserMobile(userMobile);
+		ui.setUserMobile(br.readLine());
 		System.out.println("변경할 사용자의 부모님 연락처를 입력하세요");
 		ui.setParentMobile(br.readLine());
 		System.out.println("변경할 사용자의 sms 수신여부 Y / N 을 입력하세요");
 		ui.setSms(br.readLine());
-		
-		System.out.println("변경할 사용자의 등록날짜를 입력하세요");
-		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-	       // you can change format of date
-        Date input_dt = formatter.parse(br.readLine());
-	    Timestamp input_ts = new Timestamp(input_dt.getTime());
-		ui.setInputTime(input_ts);
-		
-		System.out.println("변경할 사용자의 만료일 입력하세요");
-		Date output_dt = formatter.parse(br.readLine());
-	    Timestamp output_ts = new Timestamp(output_dt.getTime());
-		ui.setOutputTime(output_ts);
-		
 
-		userID = selectUserID(conn, tmt, userMobile);
-		updateUser(conn, tmt, ui, userMobile);
-		updateSeat(conn, tmt, ui, userID);
+		updateUser(conn, tmt, ui, userID);
 	}
 	
 	// user 정보 업데이트
-	public static int updateUser(Connection conn, PreparedStatement tmt, UserInfo userinfo, String userMobile) {
+	public static int updateUser(Connection conn, PreparedStatement tmt, UserInfo userinfo, int userID) {
 		int updateCount = 0;
 		String sql = "UPDATE user SET username = '" + userinfo.getUserName() + "', userSchool = '" + userinfo.getUserSchool()
 			+ "', userGrade = '" + userinfo.getUserGrade() + "', userMobile = '" + userinfo.getUserMobile() 
 			+ "', parentMobile = '" + userinfo.getParentMobile() + "', sms = '" + userinfo.getSms() + "'"
-			+ "WHERE userMobile = '" + userMobile + "';";
+			+ "WHERE userID = '" + userID + "';";
 		String[] update = {sql};
 		DbExecute.update(conn, update);
 		
-		return updateCount;
-	}
-	
-	// seat 정보 업데이트
-	public static int updateSeat(Connection conn, PreparedStatement tmt, UserInfo userinfo, int userID) {
-		int updateCount = 0;
-		String sql = "UPDATE seat SET startDate = '" + userinfo.getInputTime() + "', endDate = '" + userinfo.getOutputTime()
-				+ "' WHERE userID = '" + userID +"';";
-		String[] update = {sql};
-		DbExecute.update(conn, update);
-
 		return updateCount;
 	}
 	
