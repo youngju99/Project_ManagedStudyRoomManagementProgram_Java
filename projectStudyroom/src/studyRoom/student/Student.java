@@ -156,7 +156,7 @@ public class Student {
 			
 			System.out.printf("%14s\t\t", f.format(seatNum));				// 좌석 번호 출력
 			count++;
-			if(seatNum % 5 == 0 || (seatNum == seatList.size() && seatList.size() % 5 != 0)) {											// 5개마다 줄 바꿈
+			if(seatNum % 5 == 0 || seatNum == seatList.size()) {											// 5개마다 줄 바꿈
 				System.out.println("\n");
 				System.out.print("\t");
 				for(int j=i-(count-1); j<=i; j++) {
