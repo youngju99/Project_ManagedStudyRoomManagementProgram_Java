@@ -21,7 +21,7 @@ public class SmsExe extends TotalSmsNum {
 	private static ArrayList<TimeTable> ttArr = new ArrayList<TimeTable>();
 	private static ResultSet rs;
 
-	public static ArrayList<WantToSendSMS> getWantArr() {
+	public ArrayList<WantToSendSMS> getWantArr() {
 		return wantArr;
 	}
 
@@ -225,7 +225,7 @@ public class SmsExe extends TotalSmsNum {
 		LocalTime now=LocalTime.now();
 		
 		int classNum=0, hour=0, minute=0;
-		int startH=0, startM=0, startS=0, endH=0, endM=0, endS=0;
+		int startH=0, startM=0, endH=0, endM=0;
 		String temp=null;
 		
 		// 현재 시간, 분
@@ -242,14 +242,14 @@ public class SmsExe extends TotalSmsNum {
 			tok=new StringTokenizer(temp,":");
 			startH=Integer.parseInt(tok.nextToken());
 			startM=Integer.parseInt(tok.nextToken());
-			startS=Integer.parseInt(tok.nextToken());
+			Integer.parseInt(tok.nextToken());
 			
 			// 끝 시간 가져오기
 			temp=ttArr.get(i).getEnd();
 			tok=new StringTokenizer(temp,":");
 			endH=Integer.parseInt(tok.nextToken());
 			endM=Integer.parseInt(tok.nextToken());
-			endS=Integer.parseInt(tok.nextToken());
+			Integer.parseInt(tok.nextToken());
 			
 			// 교시 확인(일치하면 break: 교시 확정)
 			if((hour>startH && hour<endH) || ((hour==startH && minute>=startM) || (hour==endH && minute<=endM))) {
@@ -264,5 +264,3 @@ public class SmsExe extends TotalSmsNum {
 	}
 
 }
-
-
