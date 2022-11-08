@@ -1,7 +1,11 @@
 // 기본 틀입니다
 // 변수들은 코드 병합 및 1차 수정을 담당하시는 규완님께서 필요한 조건에 따라 추가해주시면 감사하겠습니다
 
-// 회원정보 수정부분 추가하였습니다. 2022/11/07
+// @re : 회원정보 수정부분 추가하였습니다. 
+// @date : 2022/11/07
+// @re : 경고메시지 제거
+// @date 2022/11/08
+
 
 package initialScreen;
 
@@ -31,13 +35,14 @@ public class ManagerMode {
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		
 		MySqlConnect mySqlConnect=new MySqlConnect();
+	
 
 		Connection conn=null; 
 		
 		int mode=0;
 		String sql=null;
 		
-		// mysql 연결
+// mysql 연결
 		conn=mySqlConnect.connect();
 		
 		while(true) {
@@ -60,8 +65,7 @@ public class ManagerMode {
 				// 좌석 이용 종료
 				ClearSeat.showClearSeatMenu(conn);
 			} else if(mode==4) {
-				// 벌점 관리
-				Punishment.publish(conn);
+				
 			} else if(mode==5) {
 				SmsMain.main(conn);
 			} else if(mode==6) {
