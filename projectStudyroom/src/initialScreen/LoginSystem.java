@@ -10,14 +10,7 @@ import java.sql.SQLException;
 import db.DbExecute;
 import db.MySqlConnect;
 
-class LoginSystem extends Thread{		// 접근 제한과 동시 동작을 위한 Thread 상속
-	public void run() {
-		try {
-			resetPW();
-		} catch (IOException e) {
-			
-		}
-	}
+class LoginSystem {
 	
 	// MySQL 연결
 	static MySqlConnect mysql = new MySqlConnect();
@@ -67,6 +60,29 @@ class LoginSystem extends Thread{		// 접근 제한과 동시 동작을 위한 T
 		mysql.disconnect(conn);;
 		System.out.println("\n\t로그인을 3회 시도하였습니다. 강제 종료합니다.\n");
 		return false;
+	}
+	
+	// 종료 여부 묻기
+	static boolean askEnd() throws IOException {
+		
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		
+		String end = "";
+		
+		while(true) {
+			
+			System.out.println("\n\t >> 시스템을 종료하시겠습니까? (Y / N)");
+			System.out.print("\t >> ");
+			end = br.readLine();
+			
+			if(end.equalsIgnoreCase("Y")) {
+				return true;
+			} else if(end.equalsIgnoreCase("N")) {
+				return false;
+			} else {
+				System.out.println("\n\t >> 잘못 입력하셨습니다. 다시 입력해주세요.");
+			}
+		}
 		
 	}
 	
@@ -90,7 +106,6 @@ class LoginSystem extends Thread{		// 접근 제한과 동시 동작을 위한 T
 				break;
 			}
 			else if(select.equalsIgnoreCase("N")) {
-				System.out.println("\n\t 접근 제한 중 ...\n");
 				return;
 			}
 			else {
@@ -165,7 +180,6 @@ class LoginSystem extends Thread{		// 접근 제한과 동시 동작을 위한 T
 		// DB에 UPDATE
 		updatePW(pw, name);
 		mysql.disconnect(conn);
-		System.out.println("\n\t 접근 제한 중 ...\n");
 		return;
 	}
 	
