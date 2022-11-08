@@ -62,8 +62,10 @@ public class ManagerMode {
 				// 좌석 이용 종료
 				ClearSeat.showClearSeatMenu(conn);
 			} else if(mode==4) {
-				
+				// 벌점 관리
+				Punishment.publish(conn);
 			} else if(mode==5) {
+				// SMS 전송
 				SmsMain.main(conn);
 			} else if(mode==6) {
 				EditorMain.editorUser(conn);
@@ -72,7 +74,6 @@ public class ManagerMode {
 				mySqlConnect.disconnect(conn);
 				break;
 			} else {
-				
 				System.out.println("올바른 값으로 다시 입력해주세요.\n");
 			}
 		}
