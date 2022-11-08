@@ -4,6 +4,9 @@
 // @author : 조규완
 // @date : 2022/11/07
 
+// @re : 경고 제거
+// @date : 2022/11/08
+
 package studyRoom.user_editor;
 
 import java.io.BufferedReader;
@@ -60,8 +63,8 @@ public class EditorMain {
 		
 
 		userID = selectUserID(conn, tmt, userMobile);
-		int updateCount_user = updateUser(conn, tmt, ui, userMobile);
-		int updateCount_seat = updateSeat(conn, tmt, ui, userID);
+		updateUser(conn, tmt, ui, userMobile);
+		updateSeat(conn, tmt, ui, userID);
 	}
 	
 	// user 정보 업데이트
@@ -92,7 +95,7 @@ public class EditorMain {
 	public static int selectUserID(Connection conn, PreparedStatement tmt, String userMobile) {
 		String sql = "SELECT userID"
 				+ " FROM user WHERE userMobile = '" + userMobile + "';";
-		String[] select = {sql};
+
 		int userID = 0;
 		ResultSet rs = null;
 		rs = DbExecute.select(conn, rs, sql);
