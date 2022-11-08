@@ -146,7 +146,7 @@ public class UserPaySql {
 			return false;
 		} 
 	}
-
+	
 
 	// insert----------------------------------------------------------------
 	// 신규 회원 정보 추가 메서드(usermain)
@@ -160,15 +160,6 @@ public class UserPaySql {
 		return 1;
 	}
 	
-	// 좌석 추가 메서드
-	public int addSeat(Connection conn, PreparedStatement tmt, UserSeatHistory addseat) {
-		int insertCount = 0;
-		String[] sql = {"INSERT INTO seat(userID, startDate, endDate)"
-				+ " VALUES('" + addseat.getUserID() + "', '" + addseat.getStartDate() + "', '" + addseat.getEndDate() + "')"};
-		DbExecute.insert(conn, sql);
-		
-		return insertCount;
-	}
 
 	// 결제테이블에 정보저장
 	public int addPay(Connection conn, PreparedStatement tmt, PayHistory addPay) {
@@ -194,5 +185,17 @@ public class UserPaySql {
 		return updateCount;
 	}
 	
+	// 좌석 정보 업데이트 메서드
+		public int updateNewSeat(Connection conn, PreparedStatement tmt, UserSeatHistory role, int seatNum) {
+			int updateCount = 0;
+			String sql = "UPDATE seat SET startDate = '" + role.getStartDate() + "', endDate = '" + role.getEndDate()
+					+ "' WHERE seatNum = '" + seatNum +"';";
+			String[] update = {sql};
+			DbExecute.update(conn, update);
+
+			return updateCount;
+		}
+	
 }
+
 
