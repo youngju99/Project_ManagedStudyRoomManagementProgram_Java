@@ -15,7 +15,7 @@ public class SmsMain {
 
 	public SmsMain() {}
 
-	public static void main(Connection conn) throws IOException {
+	public void main(Connection conn) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		int addSms=0, classNum=0;
