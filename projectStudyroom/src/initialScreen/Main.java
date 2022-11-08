@@ -52,9 +52,9 @@ public class Main {
 					ManagerMode.managerMode();
 				}
 				else {
-					System.out.println("\n로그인 접근을 15분간 정지합니다.\n");
+					System.out.println("\n로그인 접근을 1분간 정지합니다.\n");
 					try {
-						for(int i=120;i>=1;i--) {
+						for(int i=60;i>=1;i--) {
 							if(!resetCheck) {
 								// 비밀번호 재설정
 								loginThread.start();
