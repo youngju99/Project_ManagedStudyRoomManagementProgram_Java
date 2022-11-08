@@ -7,14 +7,15 @@ package studyRoom.pay;
  * 
  * @re : 
  * @date : 2022/11/07
+ * 
+ * @re
+ * @date : 2022/11/08
  */
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,6 @@ public class UserPaySql {
 		
 		String sql = "SELECT userID, userName, userSchool, userGrade, userMobile, parentMobile, inputTime, outputTime, sms "
 				+ " FROM user WHERE userName = '" + name + "' ;";
-		String[] select = {sql};
 		ResultSet rs = null;
 		rs = DbExecute.select(conn, rs, sql);
 		
@@ -61,7 +61,6 @@ public class UserPaySql {
 	public static boolean blacklist(Connection conn, PreparedStatement tmt, int userID) {
 		String sql = "SELECT listNo"
 				+ " FROM blacklist WHERE userID = '" + userID + "';";
-		String[] select = {sql};
 		int listNo = 0;
 		ResultSet rs = null;
 		rs = DbExecute.select(conn, rs, sql);
@@ -93,7 +92,6 @@ public class UserPaySql {
 	public static boolean selectSeat(Connection conn, PreparedStatement tmt, int userID) {
 		String sql = "SELECT seatNum"
 				+ " FROM seat WHERE userID = '" + userID +"';";
-		String[] select = {sql};
 		int seatNum = 0;
 		ResultSet rs = null;
 		rs = DbExecute.select(conn, rs, sql);
@@ -123,7 +121,6 @@ public class UserPaySql {
 	public boolean selectUserID(Connection conn, PreparedStatement tmt, String name) {
 		String sql = "SELECT userID"
 				+ " FROM user WHERE userName = '" + name + "';";
-		String[] select = {sql};
 		int userID = 0;
 		ResultSet rs = null;
 		rs = DbExecute.select(conn, rs, sql);
@@ -149,9 +146,11 @@ public class UserPaySql {
 			return false;
 		} 
 	}
+	
+
 
 	// insert----------------------------------------------------------------
-	// 신규 회원 정보 추가 메서드
+	// 신규 회원 정보 추가 메서드(usermain)
 	public static int addUser(Connection conn, PreparedStatement tmt, UserSeatHistory adduser) {
 	
 		String[] sql = {"INSERT INTO user(userName, userSchool, userGrade, userMobile, parentMobile, sms) "
@@ -199,3 +198,4 @@ public class UserPaySql {
 	
 	
 }
+
