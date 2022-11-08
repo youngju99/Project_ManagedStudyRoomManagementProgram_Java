@@ -20,12 +20,10 @@ public class Main {
 
 	public static void main(String[] args) throws IOException, SQLException{
 		
-		LoginSystem loginThread = new LoginSystem();
-		
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		
 		int select=0;
-		boolean loginCheck = false, resetCheck = false;		
+		boolean loginCheck = false;		
 		
 		while(true) {
 			System.out.println("\n\t관리형 독서실 [ 2팀 독서실 ]입니다. 접근 권한을 설정해주세요.");
@@ -55,17 +53,21 @@ public class Main {
 					System.out.println("\n로그인 접근을 1분간 정지합니다.\n");
 					try {
 						for(int i=60;i>=1;i--) {
-							if(!resetCheck) {
-								// 비밀번호 재설정
-								loginThread.start();
-								resetCheck = true;
-							}
 							Thread.sleep(1000);
 
 							if(i<=6 && i>1) {System.out.println((i-1)+"초 남았습니다.");}
 							else if(i==1) {System.out.println("\n접근 제한 해제");}
 						}
 					} catch (InterruptedException e) {}
+					// 종료 여부 확인
+					if(LoginSystem.askEnd()) {
+						System.out.println("\n\t >> 시스템을 종료합니다.");
+						return;
+					}
+					else {
+						// 비밀번호 재설정
+						LoginSystem.resetPW();						
+					}
 				}
 				
 			} else if(select==1) {
