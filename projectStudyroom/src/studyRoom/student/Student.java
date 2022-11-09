@@ -51,7 +51,7 @@ public class Student {
 
 			// 좌석 선택 - 올바른 번호와 배정된 좌석을 입력할 때까지
 			do {
-				System.out.print("\t\t\t >> 좌석 번호(종료 : X) : ");
+				System.out.print("\t\t >> 좌석 번호(종료 : X) : ");
 				try {	// 정수를 입력했을 경우
 					s = br.readLine();
 					selectSeat = Integer.parseInt(s);
@@ -64,10 +64,10 @@ public class Student {
 
 				} catch (NumberFormatException e) {		// 정수를 입력하지 않았을 경우
 					if (s.equalsIgnoreCase("X")) {		// 종료 선택
-						System.out.println("\t\t\t >> 사용자 메뉴를 종료합니다.");
+						System.out.println("\t\t >> 사용자 메뉴를 종료합니다.");
 						return;
 					} else {				// 문자(열)를 입력했을 경우
-						System.out.println("\t\t\t >> 잘못입력하셨습니다. 숫자를 입력해주세요.\n");
+						System.out.println("\t\t >> 잘못입력하셨습니다. 숫자를 입력해주세요.\n");
 						check = false;
 					}
 				}
@@ -80,9 +80,9 @@ public class Student {
 			// 학생 로그인 - 배정된 좌석의 학생 정보와 일치할 때까지
 			do {
 				// 학생 정보 입력 받기
-				System.out.print("\t\t\t >> 이름 : ");
+				System.out.print("\t\t >> 이름 : ");
 				name = br.readLine();
-				System.out.print("\t\t\t >> 핸드폰 : ");
+				System.out.print("\t\t >> 핸드폰 : ");
 				phone = br.readLine();
 
 				check = checkInfo(name, phone); // 좌석의 사용자 정보와 일치하는지 확인
@@ -107,7 +107,7 @@ public class Student {
 		// 반환값이 있는 update 메서드 호출
 		int row = DbExecute.updateReturnRow(conn, sql);
 		if(row != 0) {
-			System.out.println("\t\t\t >> 입실 / 퇴실 시간이 초기화 되었습니다.\n");
+			System.out.println("\t\t >> 입실 / 퇴실 시간이 초기화 되었습니다.\n");
 		}
 		
 	}
@@ -138,9 +138,7 @@ public class Student {
 				
 			}			
 		} catch(SQLException e) {
-			System.out.println("\n\t>> SQL에러가 발생하였습니다.\n");
 		} catch(Exception e) {
-			System.out.println("\n\t>> 에러가 발생하였습니다.\n");
 		}
 		
 		System.out.println();
@@ -211,14 +209,12 @@ public class Student {
 				return true;
 			}
 			// 범위를 벗어난 경우
-			System.out.println("\t\t\t >> 잘못 입력하셨습다. 다시 입력해 주세요.\n");
+			System.out.println("\t\t >> 잘못 입력하셨습다. 다시 입력해 주세요.\n");
 			return false;
 			
 		} catch(SQLException e) {
-			System.out.println("\n\t>> SQL에러가 발생하였습니다.\n");
 			return false;
 		} catch(Exception e) {
-			System.out.println("\n\t>> 에러가 발생하였습니다.\n");
 			return false;
 		}
 	}
@@ -241,17 +237,15 @@ public class Student {
 			}
 			
 			if(userID == 0) {		// 빈 좌석
-				System.out.println("\t\t\t >> 빈 좌석입니다. 다시 입력해 주세요.\n");
+				System.out.println("\t\t >> 빈 좌석입니다. 다시 입력해 주세요.\n");
 				return false;
 			}
 			else {					// 배정된 좌석
 				return true;
 			}		
 		} catch(SQLException e) {
-			System.out.println("\n\t>> SQL에러가 발생하였습니다.\n");
 			return false;
 		} catch(Exception e) {
-			System.out.println("\n\t>> 에러가 발생하였습니다.\n");
 			return false;
 		}
 	}
@@ -279,14 +273,12 @@ public class Student {
 				return true;
 			}
 			else {					// 그렇지않으면 false
-				System.out.println("\n\t\t\t 정보가 일치하지 않습니다.\n");
+				System.out.println("\n\t\t 정보가 일치하지 않습니다.\n");
 				return false;
 			}
 		} catch(SQLException e) {
-			System.out.println("\n\t>> SQL에러가 발생하였습니다.\n");
 			return false;
 		} catch(Exception e) {
-			System.out.println("\n\t>> 에러가 발생하였습니다.\n");
 			return false;
 		}
 	}
@@ -327,9 +319,7 @@ public class Student {
 			}
 			
 		} catch(SQLException e) {
-			System.out.println("\n\t>> SQL에러가 발생하였습니다.\n");
 		} catch(Exception e) {
-			System.out.println("\n\t>> 에러가 발생하였습니다.\n");
 		}
 		
 		
@@ -347,7 +337,7 @@ public class Student {
 		// 반환값이 있는 update 메서드 호출
 		int row = DbExecute.updateReturnRow(conn, sql);
 		if(row == 1) {
-			System.out.printf("\n\t\t\t >> %s님 입실하였습니다.\n", name);
+			System.out.printf("\n\t\t >> %s님 입실하였습니다.\n", name);
 		}
 		
 	}
@@ -361,7 +351,7 @@ public class Student {
 		// 반환값이 있는 update 메서드 호출
 		int row = DbExecute.updateReturnRow(conn, sql);
 		if(row == 1) {
-			System.out.printf("\n\t\t\t >> %s님 퇴실하였습니다.\n", name);
+			System.out.printf("\n\t\t >> %s님 퇴실하였습니다.\n", name);
 		}
 	}
 	
@@ -374,7 +364,7 @@ public class Student {
 		// 반환값이 있는 update 메서드 호출
 		int row = DbExecute.updateReturnRow(conn, sql);
 		if(row == 1) {
-			System.out.println("\t\t\t >> 퇴실시간이 초기화 되었습니다.\n");
+			System.out.println("\t\t >> 퇴실시간이 초기화 되었습니다.\n");
 		}	
 	}
 }
