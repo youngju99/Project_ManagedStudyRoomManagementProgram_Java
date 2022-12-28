@@ -1,9 +1,8 @@
 package studyRoom.user_editor;
 
 /*
- * @author : 조규완
  * @date : 2022/11/08
- * @memo : 우성님editor클래스 바탕으로 제작
+ * @memo : 
  */
 
 import java.io.BufferedReader;
