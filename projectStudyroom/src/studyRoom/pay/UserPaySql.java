@@ -1,7 +1,6 @@
 package studyRoom.pay;
 
 /*
- * @author : 조규완
  * @date : 2022/11/04
  * @memo : 신규회원등록 sql
  * 
